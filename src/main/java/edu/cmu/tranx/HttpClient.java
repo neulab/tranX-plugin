@@ -5,17 +5,16 @@ package edu.cmu.tranx;
  */
 
 
-
 import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-//import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+//import java.io.IOException;
 
 public class HttpClient{
     public static class response {

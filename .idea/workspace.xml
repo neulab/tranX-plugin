@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="" />
+    <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AnswerPopup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AnswerPopup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HelloAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HelloAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/History.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/History.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/TextBoxes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/TextBoxes.java" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +51,13 @@
       </state>
     </system>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1P6hf5hLWU5t8RgJIvQeuXKRGkv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="findjar.last.used.dir" value="$USER_HOME$/Downloads" />
   </component>
   <component name="RunDashboard">
@@ -157,5 +169,16 @@
       <updated>1565200553307</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -1,8 +1,5 @@
 package edu.cmu.tranx;
 
-import com.intellij.openapi.ui.JBPopupMenu;
-import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.ui.popup.ListPopupStep;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
