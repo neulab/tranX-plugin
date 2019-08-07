@@ -35,7 +35,7 @@ public class HttpClient{
             // query.put("passwd",password);
 
             String encoded_buf = URLEncoder.encode(buf, "UTF-8");
-            URL url=new URL("http://ogma.lti.cs.cmu.edu:8081/parser/conala/"+encoded_buf);
+            URL url=new URL("http://moto.clab.cs.cmu.edu:8082/parser/conala/"+encoded_buf);
             HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
             httpcon.setDoOutput(true);
             httpcon.setDoInput(true);
