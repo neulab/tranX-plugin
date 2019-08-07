@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 //import java.io.IOException;
 
@@ -28,24 +29,25 @@ public class HttpClient{
     public static response[] sendData(String buf) {
         try{
             // System.out.print(username+password);
-            JSONObject query=new JSONObject();
-            query.put("query",buf);
+            // JSONObject query=new JSONObject();
+            // query.put("query",buf);
             // query.put("username",username);
             // query.put("passwd",password);
 
-            URL url=new URL("http://tardigrade.andrew.cmu.edu:40300/api/request");
+            String encoded_buf = URLEncoder.encode(buf, "UTF-8");
+            URL url=new URL("http://ogma.lti.cs.cmu.edu:8081/parser/conala/"+encoded_buf);
             HttpURLConnection httpcon=(HttpURLConnection)url.openConnection();
             httpcon.setDoOutput(true);
             httpcon.setDoInput(true);
-            httpcon.setRequestMethod("POST");
+            httpcon.setRequestMethod("GET");
             httpcon.setRequestProperty("Content-Type","application/json");
 
-            OutputStream output=httpcon.getOutputStream();
+            // OutputStream output=httpcon.getOutputStream();
 
-            output.write(query.toString().getBytes("UTF-8"));
-            output.flush();
-            output.close();
-            httpcon.disconnect();
+            // output.write(query.toString().getBytes("UTF-8"));
+            // output.flush();
+            // output.close();
+            // httpcon.disconnect();
 
             StringBuilder sb= new StringBuilder();
             //int HttpResult=httpcon.getResponseCode();
