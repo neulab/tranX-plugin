@@ -1,0 +1,39 @@
+<idea-plugin>
+    <id>edu.cmu.tranx.tranx_plugin</id>
+    <name>TranX Developer Assistant</name>
+    <vendor email="gneubig@cs.cmu.edu" url="http://www.phontron.com">Graham Neubig</vendor>
+
+    <description><![CDATA[
+    A developer assistant that allows you to ask questions in English and get responses in source code.<br>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+
+        <group id="MyPlugin.SampleMenu" text="_TranX Assistant" description="TranX Developer Assistant">
+            <add-to-group group-id="EditorPopupMenu" anchor="first" />
+
+            <action id="makeTextBoxes" class="edu.cmu.tranx.AccessText" text="Ask a Question">
+                <keyboard-shortcut first-keystroke="control alt G" keymap="$default"/>
+            </action>
+            <!-- <action id="getEdits" class="edu.cmu.tranx.GetEdit" text="Remove Edits" >
+                    <keyboard-shortcut first-keystroke="alt G" keymap="$default"/>
+                </action> -->
+            <!-- <action id="Code History" class="com.myPlugin.History" text="Code History"
+                     description="Extracts lines of code before the caret"/> -->
+        </group>
+
+    </actions>
+
+
+
+</idea-plugin>

@@ -1,0 +1,193 @@
+package edu.cmu.tranx;
+
+import com.intellij.codeInsight.navigation.IncrementalSearchHandler;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.actionSystem.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.JBPopupMenu;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.PopupStep;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.ui.components.JBList;
+import edu.cmu.tranx.History;
+
+import java.io.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+import edu.cmu.tranx.HttpClient;
+
+import javax.swing.*;
+
+/**
+ *
+ */
+public class AccessText extends AnAction {
+    public static String[] resend=new String[3];
+    public String recievedQuestion(final String txt,final Project project){
+        String ans="";
+
+        Messages.showMessageDialog(project, "You searched for this: " + txt + "\n Here are some results!", "Information",
+                Messages.getInformationIcon());
+
+        return "Hello World!";
+    }
+
+    public String replaceSTR(String answer, String query){
+        String substr=null;
+        String ret=null;
+        if(answer.lastIndexOf("STR:")!=-1){
+
+            if(query.indexOf("\"")!=-1){
+                substr=query.substring(query.indexOf("\"")+1,query.lastIndexOf("\""));
+
+            }
+            if(query.indexOf("\'")!=-1){
+                substr=query.substring(query.indexOf("\'")+1,query.lastIndexOf("\'"));
+
+            }
+        }
+        if(substr!=null){
+            ret=answer.replaceAll("_STR:(\\d+)_",substr);
+
+        }
+        else{
+            ret=answer;
+
+        }
+        return ret;
+
+    }
+
+    @Override
+    public void actionPerformed(final AnActionEvent anActionEvent) {
+        //Get all the required data from data keys
+        final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
+        final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
+        //Access document, caret, and selection
+        final Document document = editor.getDocument();
+        final SelectionModel selectionModel = editor.getSelectionModel();
+
+        final int start = selectionModel.getSelectionStart();
+        final int end = selectionModel.getSelectionEnd();
+        //Replace the input box with its own class so that it does not interfere with the actual extraciton
+        // of the queries
+
+        final String query= Messages.showInputDialog(project,"What is your Question?","Query",
+                Messages.getQuestionIcon());
+        resend[0]=query;
+        //System.out.print(Checkin.uname);
+        HttpClient.response[] options=HttpClient.sendData(query);
+        System.out.print("got here");
+        System.out.print(options[0].query);
+        BaseListPopupStep<HttpClient.response> q_list=new BaseListPopupStep<HttpClient.response>
+                ("You searched" + " for: "+query+" here is a list of results",options){
+                    @Override
+                    public String getTextFor( HttpClient.response value){
+                        String q=replaceSTR(value.query,query);
+                        return "id: "+Integer.toString(value.id)+"\t"+"score: "+Double.toString(value.score)+ "\n"+
+                                "snippet: "+q;
+                    }
+                    @Override
+                    public PopupStep onChosen(HttpClient.response selectedValue, boolean finalChoice){
+                        String ans=selectedValue.query;
+                        final String answer=replaceSTR(ans,query);
+                        final Runnable runnable=new Runnable(){
+                            @Override public void run(){
+                                document.replaceString(start,end,"# ---- BEGIN AUTO-GENERATED CODE ----\n" +
+                                        "# to remove these comments and send feedback press alt-G\n"+answer+
+                                        "\n# ---- END AUTO-GENERATED CODE ----\n");
+                            resend[1]=answer;
+                            }
+                        };
+                        WriteCommandAction.runWriteCommandAction(project,runnable);
+                        return super.onChosen(selectedValue,finalChoice);
+                    }
+
+
+        };
+
+        /*final String ans= recievedQuestion(txt, project);
+        //New instance of Runnable to make a replacement
+        if (txt!= null) {
+
+
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    document.replaceString(start, end, txt);
+
+                }
+            };
+            final Runnable runnable2 = new Runnable() {
+                @Override
+                public void run() {
+                    document.replaceString(start, end, txt);
+                }
+            };
+            Runnable runnablePrint1 = new Runnable() {
+                @Override
+                public void run() {
+                    WriteCommandAction.runWriteCommandAction(project, runnable);
+                   // selectionModel.removeSelection();
+                }
+            };
+            Runnable runnablePrint2 = new Runnable() {
+                @Override
+                public void run() {
+                    WriteCommandAction.runWriteCommandAction(project, runnable2);
+                   // selectionModel.removeSelection();
+                }
+            };*/
+            //Making the replacement
+            JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
+
+            //dead code
+
+           /* try {
+                //ProcessBuilder pb= new ProcessBuilder("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+                Process p=Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+
+                try {
+                    p.waitFor();
+                } catch(InterruptedException e1){
+                    System.out.print("Terminated unexpectedly");
+                }
+                //p.waitFor();
+
+                //Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+                //Runtime.getRuntime().exec(". run_interactive.sh django");
+                System.out.print("Success!\n");
+            }
+            catch (IOException e2){
+                System.out.print("Cant find script\n");
+            }*/
+            jbPopupFactory.createListPopup(q_list).show(jbPopupFactory.guessBestPopupLocation(editor));
+
+            selectionModel.removeSelection();
+            //extracting the code history
+
+            //System.out.print(History.update(anActionEvent));
+
+            //JBPopup.show(jbPopupFactory.guessBestPopupLocation(editor));
+            //WriteCommandAction.runWriteCommandAction(project, runnable);
+            //selectionModel.removeSelection();
+        }
+
+
+    @Override
+    public void update(final AnActionEvent e) {
+        //Get required data keys
+        final Project project = e.getData(CommonDataKeys.PROJECT);
+        final Editor editor = e.getData(CommonDataKeys.EDITOR);
+        //Set visibility only in case of existing project and editor and if some text in the editor is selected
+        e.getPresentation().setVisible((project != null && editor != null  ));
+    }
+}
+
