@@ -13,6 +13,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 
+import java.util.ArrayList;
+
 /**
  *
  */
@@ -71,92 +73,94 @@ public class AccessText extends AnAction {
                 Messages.getQuestionIcon());
         resend[0]=query;
         //System.out.print(Checkin.uname);
-        HttpClient.response[] options=HttpClient.sendData(query);
-        System.out.print("got here");
-        System.out.print(options[0].query);
-        BaseListPopupStep<HttpClient.response> q_list=new BaseListPopupStep<HttpClient.response>
-                ("You searched" + " for: "+query+" here is a list of results",options){
-                    @Override
-                    public String getTextFor( HttpClient.response value){
-                        String q=replaceSTR(value.query,query);
-                        return "id: "+Integer.toString(value.id)+"\t"+"score: "+Double.toString(value.score)+ "\n"+
-                                "snippet: "+q;
-                    }
-                    @Override
-                    public PopupStep onChosen(HttpClient.response selectedValue, boolean finalChoice){
-                        String ans=selectedValue.query;
-                        final String answer=replaceSTR(ans,query);
-                        final Runnable runnable=new Runnable(){
-                            @Override public void run(){
-                                document.replaceString(start,end,"# ---- BEGIN AUTO-GENERATED CODE ----\n" +
-                                        "# to remove these comments and send feedback press alt-G\n"+answer+
-                                        "\n# ---- END AUTO-GENERATED CODE ----\n");
-                            resend[1]=answer;
-                            }
-                        };
-                        WriteCommandAction.runWriteCommandAction(project,runnable);
-                        return super.onChosen(selectedValue,finalChoice);
-                    }
-
-
-        };
-
-        /*final String ans= recievedQuestion(txt, project);
-        //New instance of Runnable to make a replacement
-        if (txt!= null) {
-
-
-            final Runnable runnable = new Runnable() {
+        try {
+            ArrayList<HttpClient.Hypothesis> options = HttpClient.sendData(query).hypotheses;
+            System.out.print(query);
+            BaseListPopupStep<HttpClient.Hypothesis> q_list = new BaseListPopupStep<HttpClient.Hypothesis>
+                    ("You searched" + " for: " + query + " here is a list of results", options) {
                 @Override
-                public void run() {
-
-                    document.replaceString(start, end, txt);
-
+                public String getTextFor(HttpClient.Hypothesis value) {
+                    // String q = replaceSTR(value.query, query);
+                    return "id: " + Integer.toString(value.id) + "\t" + "score: " + Double.toString(value.score) + "\n" +
+                            "snippet: " + value.value;
                 }
-            };
-            final Runnable runnable2 = new Runnable() {
+
                 @Override
-                public void run() {
-                    document.replaceString(start, end, txt);
-                }
-            };
-            Runnable runnablePrint1 = new Runnable() {
-                @Override
-                public void run() {
+                public PopupStep onChosen(HttpClient.Hypothesis selectedValue, boolean finalChoice) {
+                    // String ans = selectedValue.query;
+                    // final String answer = replaceSTR(ans, query);
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            document.replaceString(start, end, "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
+                                    "# to remove these comments and send feedback press alt-G\n" + selectedValue.value +
+                                    "\n# ---- END AUTO-GENERATED CODE ----\n");
+                            resend[1] = selectedValue.value;
+                        }
+                    };
                     WriteCommandAction.runWriteCommandAction(project, runnable);
-                   // selectionModel.removeSelection();
+                    return super.onChosen(selectedValue, finalChoice);
                 }
+
+
             };
-            Runnable runnablePrint2 = new Runnable() {
-                @Override
-                public void run() {
-                    WriteCommandAction.runWriteCommandAction(project, runnable2);
-                   // selectionModel.removeSelection();
-                }
-            };*/
+
+            /*final String ans= recievedQuestion(txt, project);
+            //New instance of Runnable to make a replacement
+            if (txt!= null) {
+
+
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+
+                        document.replaceString(start, end, txt);
+
+                    }
+                };
+                final Runnable runnable2 = new Runnable() {
+                    @Override
+                    public void run() {
+                        document.replaceString(start, end, txt);
+                    }
+                };
+                Runnable runnablePrint1 = new Runnable() {
+                    @Override
+                    public void run() {
+                        WriteCommandAction.runWriteCommandAction(project, runnable);
+                       // selectionModel.removeSelection();
+                    }
+                };
+                Runnable runnablePrint2 = new Runnable() {
+                    @Override
+                    public void run() {
+                        WriteCommandAction.runWriteCommandAction(project, runnable2);
+                       // selectionModel.removeSelection();
+                    }
+                };*/
             //Making the replacement
             JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
 
             //dead code
 
-           /* try {
-                //ProcessBuilder pb= new ProcessBuilder("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
-                Process p=Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+               /* try {
+                    //ProcessBuilder pb= new ProcessBuilder("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+                    Process p=Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
 
-                try {
-                    p.waitFor();
-                } catch(InterruptedException e1){
-                    System.out.print("Terminated unexpectedly");
+                    try {
+                        p.waitFor();
+                    } catch(InterruptedException e1){
+                        System.out.print("Terminated unexpectedly");
+                    }
+                    //p.waitFor();
+
+                    //Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
+                    //Runtime.getRuntime().exec(". run_interactive.sh django");
+                    System.out.print("Success!\n");
                 }
-                //p.waitFor();
-
-                //Runtime.getRuntime().exec("cd ~/NL2code/ && . ~/NL2code/run_interactive.sh django");
-                //Runtime.getRuntime().exec(". run_interactive.sh django");
-                System.out.print("Success!\n");
-            }
-            catch (IOException e2){
-                System.out.print("Cant find script\n");
-            }*/
+                catch (IOException e2){
+                    System.out.print("Cant find script\n");
+                }*/
             jbPopupFactory.createListPopup(q_list).show(jbPopupFactory.guessBestPopupLocation(editor));
 
             selectionModel.removeSelection();
@@ -167,7 +171,10 @@ public class AccessText extends AnAction {
             //JBPopup.show(jbPopupFactory.guessBestPopupLocation(editor));
             //WriteCommandAction.runWriteCommandAction(project, runnable);
             //selectionModel.removeSelection();
+        } catch(Exception e) {
+            System.err.println("Caught exception " + e);
         }
+    }
 
 
     @Override

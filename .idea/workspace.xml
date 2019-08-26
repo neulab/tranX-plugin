@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/edu/cmu/tranx/HttpClientTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HelloAction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/History.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,6 +52,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit4 Test Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -53,10 +66,21 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
     <property name="findjar.last.used.dir" value="$USER_HOME$/Downloads" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="edu.cmu.tranx" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -71,6 +95,42 @@
     </option>
   </component>
   <component name="RunManager" selected="Gradle.tranX-plugin [runIde]">
+    <configuration name="HttpClientTest.sendData" type="AndroidJUnit" temporary="true" nameIsGenerated="true">
+      <module name="tranx_plugin.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.cmu.tranx.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.cmu.tranx" />
+      <option name="MAIN_CLASS_NAME" value="edu.cmu.tranx.HttpClientTest" />
+      <option name="METHOD_NAME" value="sendData" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HttpClientTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true" show_console_on_std_err="true" show_console_on_std_out="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;edu.cmu.tranx.HttpClientTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":cleanTest" />
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="Plugin" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -149,9 +209,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.tranX-plugin [runIde]" />
+        <item itemvalue="Android JUnit.HttpClientTest.sendData" />
+        <item itemvalue="Gradle.HttpClientTest" />
         <item itemvalue="Gradle.tranX-plugin [runIde] (2)" />
         <item itemvalue="Gradle.tranX-plugin [runIde] (1)" />
-        <item itemvalue="Gradle.tranX-plugin [runIde]" />
       </list>
     </recent_temporary>
   </component>
@@ -166,6 +228,14 @@
       <option name="presentableId" value="Default" />
       <updated>1565200553307</updated>
     </task>
+    <task id="LOCAL-00001" summary="Update location of server">
+      <created>1565209373385</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1565209373385</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -180,5 +250,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update location of server" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update location of server" />
   </component>
 </project>
