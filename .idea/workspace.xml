@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/edu/cmu/tranx/HttpClientTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HelloAction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/History.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/HttpClient.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
