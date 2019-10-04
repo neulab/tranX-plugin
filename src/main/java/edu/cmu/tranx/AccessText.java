@@ -14,6 +14,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +34,16 @@ public class AccessText extends AnAction {
         JBPopup popup = popupBuilder.createPopup();
         popup.setRequestFocus(true);
         popup.show(jbPopupFactory.guessBestPopupLocation(editor));
-        form.OKButton.addActionListener(
-                e -> {
-                    popup.closeOk(null);
-                    displayResults(form.textField1.getText(), anActionEvent);
-                }
-        );
+        form.textField1.requestFocus();
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                popup.closeOk(null);
+                displayResults(form.textField1.getText(), anActionEvent);
+            }
+        };
+        form.OKButton.addActionListener(al);
+        form.textField1.addActionListener(al);
     }
     private void displayResults(String query, final AnActionEvent anActionEvent) {
         //Access document, caret, and selection
@@ -61,10 +67,12 @@ public class AccessText extends AnAction {
                 @Override
                 public PopupStep onChosen(HttpClient.Hypothesis selectedValue, boolean finalChoice) {
                     final Runnable runnable = () -> document.replaceString(start, end,
-                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
-                            "# to remove these comments and send feedback press alt-G\n" +
-                                    selectedValue.value +
-                            "\n# ---- END AUTO-GENERATED CODE ----\n");
+                            // "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
+                            // "# to remove these comments and send feedback press alt-G\n" +
+                            //         selectedValue.value +
+                            // "\n# ---- END AUTO-GENERATED CODE ----\n"
+                            selectedValue.value
+                    );
                     WriteCommandAction.runWriteCommandAction(project, runnable);
                     return super.onChosen(selectedValue, finalChoice);
                 }
