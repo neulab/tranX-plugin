@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="">
+    <list default="true" id="5cc116b7-fed9-4851-92bf-24d15ad406d7" name="Default Changelist" comment="Fix dialogs to actually work">
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/TextInputForm.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/TextInputForm.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/cmu/tranx/AccessText.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +53,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit4 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -247,6 +251,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Update location of server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update location of server" />
+    <MESSAGE value="Fix dialogs to actually work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix dialogs to actually work" />
   </component>
 </project>
