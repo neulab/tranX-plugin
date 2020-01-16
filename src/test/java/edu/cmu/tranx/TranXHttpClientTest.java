@@ -5,15 +5,14 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class HttpClientTest {
+public class TranXHttpClientTest {
 
     @Test
     public void sendData() throws Exception {
-        ArrayList<HttpClient.Hypothesis> response = HttpClient.sendData("print hello").hypotheses;
+        ArrayList<TranXHttpClient.Hypothesis> response = TranXHttpClient.sendData("print hello").hypotheses;
         System.out.println("I'm currently running this test");
-        for(HttpClient.Hypothesis x : response) {
+        for(TranXHttpClient.Hypothesis x : response) {
             System.out.println(x.id + " " + x.value + " " + x.score);
         }
-        Assert.assertEquals(response.get(0).score, response.get(0).score);
     }
 }
