@@ -54,18 +54,18 @@ public class AccessText extends AnAction {
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();
         try {
-            ArrayList<HttpClient.Hypothesis> options = HttpClient.sendData(query).hypotheses;
+            ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             System.out.print(query);
-            BaseListPopupStep<HttpClient.Hypothesis> q_list = new BaseListPopupStep<HttpClient.Hypothesis>
+            BaseListPopupStep<TranXHttpClient.Hypothesis> q_list = new BaseListPopupStep<TranXHttpClient.Hypothesis>
                     ("You searched" + " for: " + query + " here is a list of results", options) {
                 @Override
-                public String getTextFor(HttpClient.Hypothesis value) {
+                public String getTextFor(TranXHttpClient.Hypothesis value) {
                     return "id: " + value.id + "\t" + "score: " + value.score + "\n" +
                             "snippet: " + value.value;
                 }
 
                 @Override
-                public PopupStep onChosen(HttpClient.Hypothesis selectedValue, boolean finalChoice) {
+                public PopupStep onChosen(TranXHttpClient.Hypothesis selectedValue, boolean finalChoice) {
                     final Runnable runnable = () -> document.replaceString(start, end,
                             // "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
                             // "# to remove these comments and send feedback press alt-G\n" +
