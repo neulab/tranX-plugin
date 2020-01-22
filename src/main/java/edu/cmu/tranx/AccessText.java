@@ -27,6 +27,7 @@ public class AccessText extends AnAction {
     public void actionPerformed(final AnActionEvent anActionEvent) {
         //Get all the required data from data keys
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
+        final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
 
         TextInputForm form = new TextInputForm();
         JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
@@ -35,24 +36,22 @@ public class AccessText extends AnAction {
         popup.setRequestFocus(true);
         popup.show(jbPopupFactory.guessBestPopupLocation(editor));
         form.textField1.requestFocus();
-        ActionListener al = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                popup.closeOk(null);
-                displayResults(form.textField1.getText(), anActionEvent);
-            }
+        ActionListener al = e -> {
+            popup.closeOk(null);
+            displayResults(form.textField1.getText(), editor, project);
         };
         form.OKButton.addActionListener(al);
         form.textField1.addActionListener(al);
     }
-    private void displayResults(String query, final AnActionEvent anActionEvent) {
-        //Access document, caret, and selection
-        final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
-        final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
+
+    private void displayResults(String query, Editor editor, Project project) {
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
+
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();
+
+        //Access document, caret, and selection
         try {
             ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             System.out.print(query);
@@ -67,10 +66,6 @@ public class AccessText extends AnAction {
                 @Override
                 public PopupStep onChosen(TranXHttpClient.Hypothesis selectedValue, boolean finalChoice) {
                     final Runnable runnable = () -> document.replaceString(start, end,
-                            // "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
-                            // "# to remove these comments and send feedback press alt-G\n" +
-                            //         selectedValue.value +
-                            // "\n# ---- END AUTO-GENERATED CODE ----\n"
                             selectedValue.value
                     );
                     WriteCommandAction.runWriteCommandAction(project, runnable);
