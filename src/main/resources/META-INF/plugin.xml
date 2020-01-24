@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/neulab/tranX-plugin">
     <id>edu.cmu.tranx.tranx_plugin</id>
     <name>TranX Developer Assistant</name>
     <vendor email="gneubig@cs.cmu.edu" url="http://www.phontron.com">Graham Neubig</vendor>
@@ -33,6 +33,11 @@
 
     </actions>
 
+    <project-components>
+        <component>
+            <implementation-class>edu.cmu.tranx.EditorStatusComponent</implementation-class>
+        </component>
+    </project-components>
 
 
 </idea-plugin>

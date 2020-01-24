@@ -48,6 +48,8 @@ public class AccessText extends AnAction {
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
 
+        System.out.println(document.getCharsSequence());
+
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();
 
@@ -55,7 +57,7 @@ public class AccessText extends AnAction {
         try {
             ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             System.out.print(query);
-            BaseListPopupStep<TranXHttpClient.Hypothesis> q_list = new BaseListPopupStep<TranXHttpClient.Hypothesis>
+            BaseListPopupStep<TranXHttpClient.Hypothesis> q_list = new BaseListPopupStep<>
                     ("You searched" + " for: " + query + " here is a list of results", options) {
                 @Override
                 public String getTextFor(TranXHttpClient.Hypothesis value) {
