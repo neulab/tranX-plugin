@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.util.DocumentUtil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,11 +49,9 @@ public class AccessText extends AnAction {
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
 
-        System.out.println(document.getCharsSequence());
-
         final int start = selectionModel.getSelectionStart();
         final int end = selectionModel.getSelectionEnd();
-
+        String currentIndent = DocumentUtil.getIndent(document, start).toString();
         //Access document, caret, and selection
         try {
             ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
@@ -67,9 +66,12 @@ public class AccessText extends AnAction {
 
                 @Override
                 public PopupStep onChosen(TranXHttpClient.Hypothesis selectedValue, boolean finalChoice) {
-                    final Runnable runnable = () -> document.replaceString(start, end,
-                            selectedValue.value
-                    );
+                    String toInsert =
+                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + currentIndent +
+                            "# to remove these comments and send feedback press alt-G\n" + currentIndent +
+                            selectedValue.value + "\n" + currentIndent +
+                            "# ---- END AUTO-GENERATED CODE ----\n";
+                    final Runnable runnable = () -> document.replaceString(start, end, toInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
                     return super.onChosen(selectedValue, finalChoice);
                 }
