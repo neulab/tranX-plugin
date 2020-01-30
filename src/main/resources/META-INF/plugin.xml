@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/neulab/tranX-plugin">
     <id>edu.cmu.tranx.tranx_plugin</id>
     <name>TranX Developer Assistant</name>
     <vendor email="gneubig@cs.cmu.edu" url="http://www.phontron.com">Graham Neubig</vendor>
@@ -24,15 +24,20 @@
             <action id="makeTextBoxes" class="edu.cmu.tranx.AccessText" text="Ask a Question">
                 <keyboard-shortcut first-keystroke="control alt G" keymap="$default"/>
             </action>
-            <!-- <action id="getEdits" class="edu.cmu.tranx.GetEdit" text="Remove Edits" >
-                    <keyboard-shortcut first-keystroke="alt G" keymap="$default"/>
-                </action> -->
+            <action id="getEdits" class="edu.cmu.tranx.GetEdit" text="Upload Edits" >
+                <keyboard-shortcut first-keystroke="alt G" keymap="$default"/>
+            </action>
             <!-- <action id="Code History" class="com.myPlugin.History" text="Code History"
                      description="Extracts lines of code before the caret"/> -->
         </group>
 
     </actions>
 
+    <project-components>
+        <component>
+            <implementation-class>edu.cmu.tranx.EditorStatusComponent</implementation-class>
+        </component>
+    </project-components>
 
 
 </idea-plugin>
