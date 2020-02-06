@@ -14,7 +14,10 @@ repositories {
 
 dependencies {
     compile group: 'io.mikael', name: 'urlbuilder', version: '2.0.9'
-    implementation 'org.json:json:20180813'
+    compile (group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    compile 'org.jsoup:jsoup:1.12.1'
     testImplementation 'junit:junit:4.12'
 }
 
@@ -25,7 +28,5 @@ intellij {
 }
 
 patchPluginXml {
-    changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    changeNotes """any changes?"""
 }

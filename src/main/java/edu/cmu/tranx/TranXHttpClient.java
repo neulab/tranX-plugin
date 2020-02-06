@@ -4,26 +4,13 @@ package edu.cmu.tranx;
 import com.google.gson.Gson;
 import io.mikael.urlbuilder.UrlBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 
 
 public class TranXHttpClient {
-    public static class Hypothesis {
-        int id;
-        double score;
-        String value;
-        String tree_repr;
-        ArrayList<String> actions;
-    }
-
-    public static class Response {
-        ArrayList<Hypothesis> hypotheses;
-    }
 
     final static HttpClient client = HttpClient.newHttpClient();
 

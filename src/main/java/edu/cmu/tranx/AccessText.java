@@ -15,7 +15,6 @@ import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.util.DocumentUtil;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -53,19 +52,21 @@ public class AccessText extends AnAction {
         final int end = selectionModel.getSelectionEnd();
         String currentIndent = DocumentUtil.getIndent(document, start).toString();
         //Access document, caret, and selection
+        System.out.print(query);
         try {
-            ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
-            System.out.print(query);
-            BaseListPopupStep<TranXHttpClient.Hypothesis> q_list = new BaseListPopupStep<>
-                    ("You searched" + " for: " + query + " here is a list of results", options) {
+            ArrayList<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
+            ArrayList<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+            options.addAll(stackOverflowOptions);
+
+            BaseListPopupStep<Hypothesis> q_list = new BaseListPopupStep<>
+                    ("You searched for: '" + query + "', here is a list of results:", options) {
                 @Override
-                public String getTextFor(TranXHttpClient.Hypothesis value) {
-                    return "id: " + value.id + "\t" + "score: " + value.score + "\n" +
-                            "snippet: " + value.value;
+                public String getTextFor(Hypothesis value) {
+                    return "id: " + value.id + "  snippet: " + value.value;
                 }
 
                 @Override
-                public PopupStep onChosen(TranXHttpClient.Hypothesis selectedValue, boolean finalChoice) {
+                public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
                     String toInsert =
                             "# ---- BEGIN AUTO-GENERATED CODE ----\n" + currentIndent +
                             "# to remove these comments and send feedback press alt-G\n" + currentIndent +

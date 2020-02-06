@@ -33,11 +33,11 @@
 
     </actions>
 
-    <project-components>
-        <component>
-            <implementation-class>edu.cmu.tranx.EditorStatusComponent</implementation-class>
-        </component>
-    </project-components>
+<!--    <project-components>-->
+<!--        <component>-->
+<!--            <implementation-class>edu.cmu.tranx.EditorStatusComponent</implementation-class>-->
+<!--        </component>-->
+<!--    </project-components>-->
 
 
 </idea-plugin>
