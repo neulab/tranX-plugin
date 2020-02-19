@@ -1,7 +1,6 @@
 package edu.cmu.tranx;
 
 import com.jayway.jsonpath.JsonPath;
-import com.intellij.openapi.diagnostic.Logger;
 import io.mikael.urlbuilder.UrlBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -75,6 +74,7 @@ public class StackOverflowClient {
                 .addParameter("tagged", "python")
                 .addParameter("site", "stackoverflow")
                 .toUri();
+        System.out.println(uri);
         HttpRequest request = HttpRequest.newBuilder(uri).build();
         InputStream response = getDecodedInputStream(client.send(request, HttpResponse.BodyHandlers.ofInputStream()));
         String jsonString = inputStreamToString(response);
@@ -94,6 +94,8 @@ public class StackOverflowClient {
                 .addParameter("site", "stackoverflow")
                 .addParameter("filter", "withbody")
                 .toUri();
+        System.out.println(uri);
+
         request = HttpRequest.newBuilder(uri).build();
         response = getDecodedInputStream(client.send(request, HttpResponse.BodyHandlers.ofInputStream()));
         jsonString = inputStreamToString(response);

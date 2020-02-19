@@ -14,11 +14,15 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <applicationConfigurable groupId="tools" displayName="TranX Plugin"
+                                 id="preference.TranXConfigurable" instance="edu.cmu.tranx.TranXConfigurable" />
+        <applicationService serviceImplementation="edu.cmu.tranx.TranXConfig"/>
+
     </extensions>
 
     <actions>
 
-        <group id="MyPlugin.SampleMenu" text="_TranX Assistant" description="TranX Developer Assistant">
+        <group id="menu.TranXPopup" text="_TranX Assistant" description="TranX developer assistant">
             <add-to-group group-id="EditorPopupMenu" anchor="first" />
 
             <action id="makeTextBoxes" class="edu.cmu.tranx.AccessText" text="Ask a Question">
