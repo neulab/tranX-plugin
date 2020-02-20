@@ -19,6 +19,7 @@ public class GetEdit extends AnAction {
             "(?s)# ---- BEGIN AUTO-GENERATED CODE ----\n\\s*# to remove these comments and send feedback press alt-G\\s(.*)\n\\s*# ---- END AUTO-GENERATED CODE ----";
 
     private Pattern genPattern = Pattern.compile(GEN_PATTERN);
+    private final TranXConfig config = TranXConfig.getInstance();
 
 
     @Override
@@ -32,6 +33,9 @@ public class GetEdit extends AnAction {
         int matchedStart, matchedEnd;
         String modifiedCode;
         Matcher matcher = genPattern.matcher(sourceCode);
+
+        // TODO: match the shortest block? use greedy?
+
         if (matcher.find()) {
             modifiedCode = matcher.group(1);
             matchedStart = matcher.start();
@@ -50,8 +54,8 @@ public class GetEdit extends AnAction {
         String finalModifiedCode = modifiedCode.trim();
         final Runnable runnable = () -> document.replaceString(finalMatchedStart, finalMatchedEnd, finalModifiedCode);
         WriteCommandAction.runWriteCommandAction(project, runnable);
-
-        // TODO: add actual upload code
+        if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), document.getText()))
+            System.out.println("EDIT UPLOAD ERROR!");;
     }
 
 

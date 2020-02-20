@@ -26,8 +26,6 @@ public class TranXHttpClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Gson gson = new Gson();
         String jsonString = response.body();
-        System.out.println(jsonString);
-
         return gson.fromJson(jsonString, Response.class);
     }
 

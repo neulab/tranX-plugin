@@ -13,22 +13,25 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import edu.cmu.tranx.UploadHttpClient;
+
 /**
  *
  */
 public class AccessText extends AnAction {
+    private final TranXConfig config = TranXConfig.getInstance();
 
     @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
         //Get all the required data from data keys
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
-
         TextInputForm form = new TextInputForm();
         JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
         ComponentPopupBuilder popupBuilder = jbPopupFactory.createComponentPopupBuilder(form.rootPanel, null);
@@ -48,11 +51,11 @@ public class AccessText extends AnAction {
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
 
-        final int start = selectionModel.getSelectionStart();
-        final int end = selectionModel.getSelectionEnd();
-        String currentIndent = DocumentUtil.getIndent(document, start).toString();
+        int start = selectionModel.getSelectionStart();
+        int end = selectionModel.getSelectionEnd();
+        int lineStartOffset = DocumentUtil.getLineStartOffset(start, document);
+        String indent = document.getText(new TextRange(lineStartOffset, start));
         //Access document, caret, and selection
-        System.out.print(query);
         try {
             ArrayList<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             ArrayList<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
@@ -62,18 +65,26 @@ public class AccessText extends AnAction {
                     ("You searched for: '" + query + "', here is a list of results:", options) {
                 @Override
                 public String getTextFor(Hypothesis value) {
-                    return "id: " + value.id + "  snippet: " + value.value;
+                    if (value.id > 0)
+                        return "GEN: " + value.value;
+                    else
+                        return "RET: " + value.value;
                 }
 
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
                     String toInsert =
-                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + currentIndent +
-                            "# to remove these comments and send feedback press alt-G\n" + currentIndent +
-                            selectedValue.value + "\n" + currentIndent +
+                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
+                            "# to remove these comments and send feedback press alt-G\n" + indent +
+                            selectedValue.value + "\n"  + indent +
                             "# ---- END AUTO-GENERATED CODE ----\n";
                     final Runnable runnable = () -> document.replaceString(start, end, toInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
+                    int selectedIndex = options.indexOf(selectedValue);
+
+                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
+                            selectedIndex, options, document.getText()))
+                        System.out.println("QUERY UPLOAD ERROR!");
                     return super.onChosen(selectedValue, finalChoice);
                 }
 
@@ -95,7 +106,7 @@ public class AccessText extends AnAction {
         final Project project = e.getData(CommonDataKeys.PROJECT);
         final Editor editor = e.getData(CommonDataKeys.EDITOR);
         //Set visibility only in case of existing project and editor and if some text in the editor is selected
-        e.getPresentation().setVisible((project != null && editor != null  ));
+        e.getPresentation().setVisible((project != null && editor != null));
     }
 }
 
