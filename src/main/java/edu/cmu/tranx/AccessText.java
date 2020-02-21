@@ -1,5 +1,6 @@
 package edu.cmu.tranx;
 
+import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -13,22 +14,31 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  *
  */
 public class AccessText extends AnAction {
+    private final TranXConfig config = TranXConfig.getInstance();
 
     @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
         //Get all the required data from data keys
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
+
+        // ensure userId set in settings
+        if (config == null || config.getUserName() == null || config.getUserName().equals("")) {
+            HintManager.getInstance().showErrorHint(editor, "Error: UserID not set in plugin settings");
+            return;
+        }
 
         TextInputForm form = new TextInputForm();
         JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
@@ -49,30 +59,46 @@ public class AccessText extends AnAction {
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
 
-        final int start = selectionModel.getSelectionStart();
-        final int end = selectionModel.getSelectionEnd();
-        String currentIndent = DocumentUtil.getIndent(document, start).toString();
+        int start = selectionModel.getSelectionStart();
+        int end = selectionModel.getSelectionEnd();
+        int lineStartOffset = DocumentUtil.getLineStartOffset(start, document);
+        String indent = document.getText(new TextRange(lineStartOffset, start));
         //Access document, caret, and selection
         try {
-            ArrayList<TranXHttpClient.Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
-            System.out.print(query);
-            BaseListPopupStep<TranXHttpClient.Hypothesis> q_list = new BaseListPopupStep<>
-                    ("You searched" + " for: " + query + " here is a list of results", options) {
+            List<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
+            options = Utils.firstK(options, 7);
+            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+            stackOverflowOptions = Utils.firstK(stackOverflowOptions, 7);
+            options.addAll(stackOverflowOptions);
+
+            List<Hypothesis> finalOptions = options;
+
+            BaseListPopupStep<Hypothesis> q_list = new BaseListPopupStep<>
+                    ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
-                public String getTextFor(TranXHttpClient.Hypothesis value) {
-                    return "id: " + value.id + "\t" + "score: " + value.score + "\n" +
-                            "snippet: " + value.value;
+                public String getTextFor(Hypothesis value) {
+                    if (value.id > 0)
+                        return "GEN: " + value.value;
+                    else
+                        return "RET: " + value.value;
                 }
 
                 @Override
-                public PopupStep onChosen(TranXHttpClient.Hypothesis selectedValue, boolean finalChoice) {
+                public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
+                    String hash = HashStringGenerator.generateHashString();
                     String toInsert =
-                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + currentIndent +
-                            "# to remove these comments and send feedback press alt-G\n" + currentIndent +
-                            selectedValue.value + "\n" + currentIndent +
+                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
+                            "# ---- " + hash + " ----\n" + indent +
+                            "# to remove these comments and send feedback press alt-G\n" + indent +
+                            selectedValue.value + "\n"  + indent +
                             "# ---- END AUTO-GENERATED CODE ----\n";
                     final Runnable runnable = () -> document.replaceString(start, end, toInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
+                    int selectedIndex = finalOptions.indexOf(selectedValue);
+
+                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
+                            selectedIndex, finalOptions, document.getText(), hash))
+                        System.out.println("QUERY UPLOAD ERROR!");
                     return super.onChosen(selectedValue, finalChoice);
                 }
 
@@ -94,7 +120,7 @@ public class AccessText extends AnAction {
         final Project project = e.getData(CommonDataKeys.PROJECT);
         final Editor editor = e.getData(CommonDataKeys.EDITOR);
         //Set visibility only in case of existing project and editor and if some text in the editor is selected
-        e.getPresentation().setVisible((project != null && editor != null  ));
+        e.getPresentation().setVisible((project != null && editor != null));
     }
 }
 

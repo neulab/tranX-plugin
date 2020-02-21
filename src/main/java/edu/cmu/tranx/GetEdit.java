@@ -1,11 +1,13 @@
 package edu.cmu.tranx;
 
+import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 
 import java.util.regex.Matcher;
@@ -16,9 +18,10 @@ import java.util.regex.Pattern;
  */
 public class GetEdit extends AnAction {
     private static final String GEN_PATTERN =
-            "(?s)# ---- BEGIN AUTO-GENERATED CODE ----\n\\s*# to remove these comments and send feedback press alt-G\\s(.*)\n\\s*# ---- END AUTO-GENERATED CODE ----";
+            "(?s)# ---- BEGIN AUTO-GENERATED CODE ----\n\\s*# ---- ([a-z0-9]+) ----\n\\s*# to remove these comments and send feedback press alt-G\\s(.*?)\n\\s*# ---- END AUTO-GENERATED CODE ----";
 
     private Pattern genPattern = Pattern.compile(GEN_PATTERN);
+    private final TranXConfig config = TranXConfig.getInstance();
 
 
     @Override
@@ -27,31 +30,42 @@ public class GetEdit extends AnAction {
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
         final Document document = editor.getDocument();
-        String sourceCode = document.getText();
+        final SelectionModel selectionModel = editor.getSelectionModel();
 
-        int matchedStart, matchedEnd;
-        String modifiedCode;
-        Matcher matcher = genPattern.matcher(sourceCode);
-        if (matcher.find()) {
-            modifiedCode = matcher.group(1);
-            matchedStart = matcher.start();
-            matchedEnd = matcher.end();
-        }
-        else {
+        // ensure userId set in settings
+        if (config == null || config.getUserName() == null || config.getUserName().equals("")) {
+            HintManager.getInstance().showErrorHint(editor, "Error: UserID not set in plugin settings");
             return;
         }
 
-        System.out.println(modifiedCode);
-        System.out.println(matchedStart);
-        System.out.println(matchedEnd);
+        int start = selectionModel.getSelectionStart();
 
-        int finalMatchedStart = matchedStart;
-        int finalMatchedEnd = matchedEnd;
-        String finalModifiedCode = modifiedCode.trim();
-        final Runnable runnable = () -> document.replaceString(finalMatchedStart, finalMatchedEnd, finalModifiedCode);
-        WriteCommandAction.runWriteCommandAction(project, runnable);
+        String sourceCode = document.getText();
 
-        // TODO: add actual upload code
+        int matchedStart, matchedEnd ;
+        String modifiedCode, hash;
+        Matcher matcher = genPattern.matcher(sourceCode);
+
+        while (matcher.find()) {
+            hash = matcher.group(1);
+            modifiedCode = matcher.group(2);
+            matchedStart = matcher.start();
+            matchedEnd = matcher.end();
+            if (start >= matchedStart && start <= matchedEnd) {
+                System.out.println(hash);
+                int finalMatchedStart = matchedStart;
+                int finalMatchedEnd = matchedEnd;
+                String finalModifiedCode = modifiedCode.trim();
+                if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), document.getText(), hash)) {
+                    HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
+                    return;
+                }
+                final Runnable runnable = () -> document.replaceString(finalMatchedStart, finalMatchedEnd, finalModifiedCode);
+                WriteCommandAction.runWriteCommandAction(project, runnable);
+                return;
+            }
+        }
+        HintManager.getInstance().showErrorHint(editor, "Error: Cursor position not inside generated block.");
     }
 
 
