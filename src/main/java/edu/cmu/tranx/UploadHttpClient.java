@@ -9,14 +9,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class UploadHttpClient {
 
     final static HttpClient client = HttpClient.newHttpClient();
 
-    public static boolean sendQueryData(String query, String userId, int selectedIndex, ArrayList<Hypothesis> options, String currentDocument) {
+    public static boolean sendQueryData(String query, String userId, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
         QueryData queryData = new QueryData();
         queryData.candidates = options;
         queryData.userId = userId;
@@ -24,16 +24,19 @@ public class UploadHttpClient {
         queryData.selectedIndex = selectedIndex;
         queryData.eventType = "query";
         queryData.document = currentDocument;
+        queryData.hash = hash;
 
         return sendData(queryData);
     }
 
-    public static boolean sendEditData(String finalModifiedCode, String userId, String currentDocument) {
+    public static boolean sendEditData(String finalModifiedCode, String userId, String currentDocument, String hash) {
         EditData editData = new EditData();
         editData.finalModifiedCode = finalModifiedCode;
         editData.userId = userId;
         editData.eventType = "edit";
         editData.document = currentDocument;
+        editData.hash = hash;
+
 
         return sendData(editData);
     }

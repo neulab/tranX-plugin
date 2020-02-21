@@ -1,10 +1,11 @@
 package edu.cmu.tranx;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class QueryData {
+    String hash;
     String query;
-    ArrayList<Hypothesis> candidates;
+    List<Hypothesis> candidates;
     int selectedIndex;
     String userId;
     String eventType;

@@ -1,5 +1,6 @@
 package edu.cmu.tranx;
 
+import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,8 +19,8 @@ import com.intellij.util.DocumentUtil;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
-import edu.cmu.tranx.UploadHttpClient;
 
 /**
  *
@@ -32,6 +33,13 @@ public class AccessText extends AnAction {
         //Get all the required data from data keys
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
+
+        // ensure userId set in settings
+        if (config == null || config.getUserName() == null || config.getUserName().equals("")) {
+            HintManager.getInstance().showErrorHint(editor, "Error: UserID not set in plugin settings");
+            return;
+        }
+
         TextInputForm form = new TextInputForm();
         JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
         ComponentPopupBuilder popupBuilder = jbPopupFactory.createComponentPopupBuilder(form.rootPanel, null);
@@ -57,12 +65,16 @@ public class AccessText extends AnAction {
         String indent = document.getText(new TextRange(lineStartOffset, start));
         //Access document, caret, and selection
         try {
-            ArrayList<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
-            ArrayList<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+            List<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
+            options = Utils.firstK(options, 7);
+            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+            stackOverflowOptions = Utils.firstK(stackOverflowOptions, 7);
             options.addAll(stackOverflowOptions);
 
+            List<Hypothesis> finalOptions = options;
+
             BaseListPopupStep<Hypothesis> q_list = new BaseListPopupStep<>
-                    ("You searched for: '" + query + "', here is a list of results:", options) {
+                    ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
                 public String getTextFor(Hypothesis value) {
                     if (value.id > 0)
@@ -73,17 +85,19 @@ public class AccessText extends AnAction {
 
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
+                    String hash = HashStringGenerator.generateHashString();
                     String toInsert =
                             "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
+                            "# ---- " + hash + " ----\n" + indent +
                             "# to remove these comments and send feedback press alt-G\n" + indent +
                             selectedValue.value + "\n"  + indent +
                             "# ---- END AUTO-GENERATED CODE ----\n";
                     final Runnable runnable = () -> document.replaceString(start, end, toInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
-                    int selectedIndex = options.indexOf(selectedValue);
+                    int selectedIndex = finalOptions.indexOf(selectedValue);
 
                     if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
-                            selectedIndex, options, document.getText()))
+                            selectedIndex, finalOptions, document.getText(), hash))
                         System.out.println("QUERY UPLOAD ERROR!");
                     return super.onChosen(selectedValue, finalChoice);
                 }
