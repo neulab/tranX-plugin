@@ -2,6 +2,7 @@
     <id>edu.cmu.tranx.tranx_plugin</id>
     <name>TranX Developer Assistant</name>
     <vendor email="gneubig@cs.cmu.edu" url="http://www.phontron.com">Graham Neubig</vendor>
+    <idea-version since-build="191.*"/>
 
     <description><![CDATA[
     A developer assistant that allows you to ask questions in English and get responses in source code.<br>
@@ -10,6 +11,7 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
 
 
     <extensions defaultExtensionNs="com.intellij">
