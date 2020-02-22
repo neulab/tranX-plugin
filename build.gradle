@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.15'
+    id 'org.jetbrains.intellij' version '0.4.16'
 }
 
 group 'edu.cmu.tranx'
@@ -23,10 +23,8 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2019.3.1'
+    // define runIde test version here
+    version '2019.3.3'
     type 'PY'
-}
-
-patchPluginXml {
-    changeNotes """any changes?"""
+    updateSinceUntilBuild false
 }
