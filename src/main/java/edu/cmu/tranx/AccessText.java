@@ -18,7 +18,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
 
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 
