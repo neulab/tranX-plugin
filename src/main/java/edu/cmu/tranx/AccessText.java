@@ -66,13 +66,14 @@ public class AccessText extends AnAction {
         try {
             List<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             options = Utils.firstK(options, 7);
-            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+//            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
+            List<Hypothesis> stackOverflowOptions = BingSearchClient.sendData(query).hypotheses;
             stackOverflowOptions = Utils.firstK(stackOverflowOptions, 7);
             options.addAll(stackOverflowOptions);
 
             List<Hypothesis> finalOptions = options;
 
-            BaseListPopupStep<Hypothesis> q_list = new BaseListPopupStep<>
+            BaseListPopupStep<Hypothesis> qList = new BaseListPopupStep<>
                     ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
                 public String getTextFor(Hypothesis value) {
@@ -85,27 +86,28 @@ public class AccessText extends AnAction {
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
                     String hash = HashStringGenerator.generateHashString();
-                    String toInsert =
-                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
-                            "# ---- " + hash + " ----\n" + indent +
-                            "# to remove these comments and send feedback press alt-G\n" + indent +
-                            selectedValue.value + "\n"  + indent +
-                            "# ---- END AUTO-GENERATED CODE ----\n";
-                    final Runnable runnable = () -> document.replaceString(start, end, toInsert);
-                    WriteCommandAction.runWriteCommandAction(project, runnable);
                     int selectedIndex = finalOptions.indexOf(selectedValue);
 
                     if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
                             selectedIndex, finalOptions, document.getText(), hash))
-                        System.out.println("QUERY UPLOAD ERROR!");
+                        HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
+                    else {
+                        String toInsert =
+                                "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
+                                        "# ---- " + hash + " ----\n" + indent +
+                                        "# to remove these comments and send feedback press alt-G\n" + indent +
+                                        selectedValue.value + "\n" + indent +
+                                        "# ---- END AUTO-GENERATED CODE ----\n";
+                        final Runnable runnable = () -> document.replaceString(start, end, toInsert);
+                        WriteCommandAction.runWriteCommandAction(project, runnable);
+                    }
                     return super.onChosen(selectedValue, finalChoice);
                 }
 
             };
 
             JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
-            jbPopupFactory.createListPopup(q_list).show(jbPopupFactory.guessBestPopupLocation(editor));
-
+            jbPopupFactory.createListPopup(qList).show(jbPopupFactory.guessBestPopupLocation(editor));
             selectionModel.removeSelection();
         } catch(Exception e) {
             System.err.println("Caught exception " + e);
