@@ -1,6 +1,7 @@
 package edu.cmu.tranx;
 
 import com.intellij.codeInsight.hint.HintManager;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -17,6 +18,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  *
  */
-public class AccessText extends AnAction {
+public class QueryIntent extends AnAction {
     private final TranXConfig config = TranXConfig.getInstance();
 
     @Override
@@ -77,11 +79,17 @@ public class AccessText extends AnAction {
                     ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
                 public String getTextFor(Hypothesis value) {
-                    if (value.id > 0)
-                        return "GEN: " + value.value;
-                    else
-                        return "RET: " + value.value;
+                    return value.value;
                 }
+
+                @Override
+                public Icon getIconFor(Hypothesis value) {
+                    if (value.id > 0)
+                        return AllIcons.General.BalloonInformation;
+                    else
+                        return AllIcons.General.Web;
+                }
+
 
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
