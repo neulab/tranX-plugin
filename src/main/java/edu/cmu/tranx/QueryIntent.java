@@ -79,7 +79,7 @@ public class QueryIntent extends AnAction {
                     ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
                 public String getTextFor(Hypothesis value) {
-                    return value.value;
+                    return "<html>" + value.value;
                 }
 
                 @Override
@@ -101,12 +101,13 @@ public class QueryIntent extends AnAction {
                         HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
                     else {
                         String toInsert =
-                                "# ---- BEGIN AUTO-GENERATED CODE ----\n" + indent +
-                                        "# ---- " + hash + " ----\n" + indent +
-                                        "# to remove these comments and send feedback press alt-G\n" + indent +
-                                        selectedValue.value + "\n" + indent +
+                                "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
+                                        "# ---- " + hash + " ----\n" +
+                                        "# to remove these comments and send feedback press alt-G\n" +
+                                        selectedValue.value + "\n" +
                                         "# ---- END AUTO-GENERATED CODE ----\n";
-                        final Runnable runnable = () -> document.replaceString(start, end, toInsert);
+                        String finalToInsert = insertIndent(toInsert, indent);
+                        final Runnable runnable = () -> document.replaceString(start, end, finalToInsert);
                         WriteCommandAction.runWriteCommandAction(project, runnable);
                     }
                     return super.onChosen(selectedValue, finalChoice);
@@ -122,6 +123,9 @@ public class QueryIntent extends AnAction {
         }
     }
 
+    public static String insertIndent(String str, String indent) {
+        return str.replaceAll("(\r\n|\n)", "\n" + indent);
+    }
 
     @Override
     public void update(final AnActionEvent e) {
