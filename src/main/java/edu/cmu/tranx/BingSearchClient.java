@@ -1,7 +1,10 @@
 package edu.cmu.tranx;
 
-import com.jayway.jsonpath.JsonPath;
 import io.mikael.urlbuilder.UrlBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,29 +18,26 @@ public class BingSearchClient {
 
     final static HttpClient client = HttpClient.newHttpClient();
 
-
-    public static Response sendData(String buf) throws Exception {
+    public static List<String> getQuestionIDs(String buf) throws Exception {
         URI uri = UrlBuilder.empty()
                 .withScheme("http")
-                .withHost("moto.clab.cs.cmu.edu")
-                .withPort(8082)
-                .withPath("/")
+                .withHost("www.bing.com")
+                .withPath("/search")
+                .addParameter("setmkt", "en-US")
+                .addParameter("setlang", "en-us")
+                .addParameter("fdpriority", "premium")
                 .addParameter("q", "Python " + buf + " site:stackoverflow.com")
-                .addParameter("c", "5")
                 .toUri();
 
         HttpRequest request = HttpRequest.newBuilder(uri).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        List<String> codeSnippets = JsonPath.read(response.body(), "$.ResultItems[*].CodeSnippets[*]");
-        Response res = new Response();
-        res.hypotheses = new ArrayList<>();
-        for (String snippet : codeSnippets) {
-            Hypothesis hyp = new Hypothesis();
-            hyp.value = snippet;
-            hyp.id = 0;
-            res.hypotheses.add(hyp);
+        Document bingSearchDoc = Jsoup.parse(response.body());
+        Elements links = bingSearchDoc.select("li.b_algo > h2 > a");
+        List<String> qIds = new ArrayList<>();
+        for (Element e: links) {
+            qIds.add(e.attr("href").split("/")[4]);
         }
-        return res;
+        return qIds;
     }
 
 }

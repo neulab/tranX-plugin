@@ -6,6 +6,7 @@ public class Hypothesis {
     int id;
     double score;
     String value;
-    String tree_repr;
-    ArrayList<String> actions;
+    transient String tree_repr;
+    transient ArrayList<String> actions;
+    transient String htmlValue;
 }

@@ -19,6 +19,7 @@
         <applicationConfigurable groupId="tools" displayName="TranX Plugin"
                                  id="preference.TranXConfigurable" instance="edu.cmu.tranx.TranXConfigurable" />
         <applicationService serviceImplementation="edu.cmu.tranx.TranXConfig"/>
+        <applicationService serviceImplementation="edu.cmu.tranx.CodeSyntaxHighlighter"/>
 
     </extensions>
 

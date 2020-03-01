@@ -20,6 +20,7 @@ import com.intellij.util.DocumentUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +29,7 @@ import java.util.List;
  */
 public class QueryIntent extends AnAction {
     private final TranXConfig config = TranXConfig.getInstance();
+    private final CodeSyntaxHighlighter highlighter = CodeSyntaxHighlighter.getInstance();
 
     @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
@@ -68,10 +70,11 @@ public class QueryIntent extends AnAction {
         try {
             List<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
             options = Utils.firstK(options, 7);
-//            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
-            List<Hypothesis> stackOverflowOptions = BingSearchClient.sendData(query).hypotheses;
+            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
             stackOverflowOptions = Utils.firstK(stackOverflowOptions, 7);
             options.addAll(stackOverflowOptions);
+
+            getCodeHtml(options);
 
             List<Hypothesis> finalOptions = options;
 
@@ -79,7 +82,7 @@ public class QueryIntent extends AnAction {
                     ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
                 @Override
                 public String getTextFor(Hypothesis value) {
-                    return "<html>" + value.value;
+                    return value.htmlValue;
                 }
 
                 @Override
@@ -120,6 +123,20 @@ public class QueryIntent extends AnAction {
             selectionModel.removeSelection();
         } catch(Exception e) {
             System.err.println("Caught exception " + e);
+        }
+    }
+
+    private void getCodeHtml(List<Hypothesis> options) {
+        List<String> codeList = new ArrayList<>();
+        for (Hypothesis option : options) {
+            codeList.add(option.value);
+        }
+
+        List<String> htmlTextList = highlighter.highlightCodeList(codeList);
+        assert htmlTextList.size() == options.size();
+
+        for (int i = 0; i < htmlTextList.size(); i++) {
+            options.get(i).htmlValue = htmlTextList.get(i);
         }
     }
 
