@@ -44,7 +44,7 @@ public class GetEdit extends AnAction {
 
         String sourceCode = document.getText();
 
-        int matchedStart, matchedEnd ;
+        int matchedStart, matchedEnd;
         String modifiedCode, hash, query;
         Matcher matcher = genPattern.matcher(sourceCode);
 
@@ -78,7 +78,7 @@ public class GetEdit extends AnAction {
         final Project project = e.getData(CommonDataKeys.PROJECT);
         final Editor editor = e.getData(CommonDataKeys.EDITOR);
         //Set visibility only in case of existing project and editor and if some text in the editor is selected
-        e.getPresentation().setVisible((project != null && editor != null  ));
+        e.getPresentation().setVisible((project != null && editor != null));
     }
 }
 

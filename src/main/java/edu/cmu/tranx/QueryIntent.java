@@ -12,10 +12,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.ComponentPopupBuilder;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.PopupStep;
+import com.intellij.openapi.ui.popup.*;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
@@ -116,6 +113,11 @@ public class QueryIntent extends AnAction {
                         return AllIcons.General.Web;
                 }
 
+                @Override
+                public ListSeparator getSeparatorAbove(Hypothesis value) {
+                    return new ListSeparator();
+                }
+
 
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
@@ -143,9 +145,9 @@ public class QueryIntent extends AnAction {
             };
 
             JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
-            jbPopupFactory.createListPopup(qList).show(jbPopupFactory.guessBestPopupLocation(editor));
+            jbPopupFactory.createListPopup(qList).showInBestPositionFor(editor);
             selectionModel.removeSelection();
-        } catch(Exception e) {
+        } catch (Exception e) {
             String exMsg = "Caught exception: " + e;
             System.err.println(exMsg);
             HintManager.getInstance().showErrorHint(editor, exMsg);

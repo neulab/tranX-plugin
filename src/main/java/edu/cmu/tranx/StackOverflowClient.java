@@ -46,7 +46,7 @@ public class StackOverflowClient extends Client {
         BufferedReader reader = new BufferedReader(isReader);
         StringBuilder sb = new StringBuilder();
         String str;
-        while((str = reader.readLine())!= null){
+        while ((str = reader.readLine()) != null) {
             sb.append(str);
         }
         return sb.toString();
@@ -60,7 +60,7 @@ public class StackOverflowClient extends Client {
         URI uri = UrlBuilder.empty()
                 .withScheme("https")
                 .withHost("api.stackexchange.com")
-                .withPath("/2.2/questions/" +  joinedQids + "/answers")
+                .withPath("/2.2/questions/" + joinedQids + "/answers")
                 .addParameter("order", "desc")
                 .addParameter("sort", "votes")
                 .addParameter("pagesize", "10")
@@ -80,7 +80,7 @@ public class StackOverflowClient extends Client {
         for (String body : answerBodies) {
             Document doc = Jsoup.parseBodyFragment(body);
             Elements codeSnippets = doc.select("pre > code");
-            for (Element e: codeSnippets) {
+            for (Element e : codeSnippets) {
                 Hypothesis hyp = new Hypothesis();
                 hyp.value = e.text();
                 hyp.id = 0;

@@ -8,7 +8,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.Nullable;
 
 @State(
-        name="TranXConfig",
+        name = "TranXConfig",
         storages = {
                 @Storage("TranXConfig.xml")}
 )

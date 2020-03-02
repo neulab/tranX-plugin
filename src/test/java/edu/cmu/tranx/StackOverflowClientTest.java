@@ -2,8 +2,6 @@ package edu.cmu.tranx;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class StackOverflowClientTest {
 
     @Test

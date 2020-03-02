@@ -8,7 +8,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class BingSearchClient extends Client {
         Document bingSearchDoc = Jsoup.parse(response.body());
         Elements links = bingSearchDoc.select("li.b_algo > h2 > a");
         List<String> qIds = new ArrayList<>();
-        for (Element e: links) {
+        for (Element e : links) {
             qIds.add(e.attr("href").split("/")[4]);
         }
         return qIds;
