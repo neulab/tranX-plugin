@@ -9,7 +9,6 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -17,9 +16,8 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 
-public class StackOverflowClient {
+public class StackOverflowClient extends Client {
 
-    final static HttpClient client = HttpClient.newHttpClient();
     public static InputStream getDecodedInputStream(
             HttpResponse<InputStream> httpResponse) {
         String encoding = determineContentEncoding(httpResponse);
@@ -55,7 +53,7 @@ public class StackOverflowClient {
     }
 
 
-    public static Response sendData(String buf) throws Exception {
+    public static Response sendData(String buf) throws IOException, InterruptedException {
         List<String> questionIds = BingSearchClient.getQuestionIDs(buf);
         String joinedQids = String.join(";", questionIds);
 
@@ -90,6 +88,14 @@ public class StackOverflowClient {
             }
         }
         return res;
+    }
+
+    public static List<Hypothesis> getCandidates(String query) {
+        try {
+            return sendData(query).hypotheses;
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
     }
 
 }

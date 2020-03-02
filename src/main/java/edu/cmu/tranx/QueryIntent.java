@@ -6,9 +6,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.command.undo.UndoManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.ComponentPopupBuilder;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -17,11 +19,13 @@ import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.util.DocumentUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -59,6 +63,7 @@ public class QueryIntent extends AnAction {
     }
 
     private void displayResults(String query, Editor editor, Project project) {
+        if (Utils.isBlankString(query)) return;
         final Document document = editor.getDocument();
         final SelectionModel selectionModel = editor.getSelectionModel();
 
@@ -66,20 +71,38 @@ public class QueryIntent extends AnAction {
         int end = selectionModel.getSelectionEnd();
         int lineStartOffset = DocumentUtil.getLineStartOffset(start, document);
         String indent = document.getText(new TextRange(lineStartOffset, start));
-        //Access document, caret, and selection
         try {
-            List<Hypothesis> options = TranXHttpClient.sendData(query).hypotheses;
-            options = Utils.firstK(options, 7);
-            List<Hypothesis> stackOverflowOptions = StackOverflowClient.sendData(query).hypotheses;
-            stackOverflowOptions = Utils.firstK(stackOverflowOptions, 7);
-            options.addAll(stackOverflowOptions);
+            CompletableFuture<List<Hypothesis>> tranXCandidatesFuture = CompletableFuture.supplyAsync(
+                    () -> TranXHttpClient.getCandidates(query));
 
+            CompletableFuture<List<Hypothesis>> stackOverflowCandidatesFuture = CompletableFuture.supplyAsync(
+                    () -> StackOverflowClient.getCandidates(query));
+
+            CompletableFuture<List<Hypothesis>> combinedCandidatesFuture = tranXCandidatesFuture
+                    .thenCombine(stackOverflowCandidatesFuture, (tranXCandidates, stackOverflowCandidates) -> {
+                        List<Hypothesis> candidates = new ArrayList<>();
+                        if (tranXCandidates != null || stackOverflowCandidates != null) {
+                            if (tranXCandidates == null) {
+                                HintManager.getInstance().showErrorHint(editor, "Error: TranX query failed!");
+                            } else {
+                                candidates.addAll(Utils.firstK(tranXCandidates, 7));
+                            }
+                            if (stackOverflowCandidates == null) {
+                                HintManager.getInstance().showErrorHint(editor, "Error: StackOverflow query failed!");
+                            } else {
+                                candidates.addAll(Utils.firstK(stackOverflowCandidates, 7));
+                            }
+                        }
+                        return candidates;
+                    });
+
+            List<Hypothesis> options = combinedCandidatesFuture.get();
             getCodeHtml(options);
 
-            List<Hypothesis> finalOptions = options;
-
             BaseListPopupStep<Hypothesis> qList = new BaseListPopupStep<>
-                    ("You searched for: '" + query + "', here is a list of results:", finalOptions) {
+                    ("You searched for: '" + query + "', here is a list of results:", options) {
+
+                @NotNull
                 @Override
                 public String getTextFor(Hypothesis value) {
                     return value.htmlValue;
@@ -97,21 +120,22 @@ public class QueryIntent extends AnAction {
                 @Override
                 public PopupStep onChosen(Hypothesis selectedValue, boolean finalChoice) {
                     String hash = HashStringGenerator.generateHashString();
-                    int selectedIndex = finalOptions.indexOf(selectedValue);
+                    int selectedIndex = options.indexOf(selectedValue);
+                    String toInsert =
+                            "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
+                                    "# ---- " + hash + " ----\n" +
+                                    "# query: " + query + "\n" +
+                                    "# to remove these comments and send feedback press alt-G\n" +
+                                    selectedValue.value + "\n" +
+                                    "# ---- END AUTO-GENERATED CODE ----\n";
+                    String finalToInsert = Utils.insertIndent(toInsert, indent);
+                    final Runnable runnable = () -> document.replaceString(start, end, finalToInsert);
+                    WriteCommandAction.runWriteCommandAction(project, runnable);
 
                     if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
-                            selectedIndex, finalOptions, document.getText(), hash))
+                            selectedIndex, options, document.getText(), hash)) {
+                        UndoManager.getInstance(project).undo(FileEditorManager.getInstance(project).getSelectedEditor());
                         HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
-                    else {
-                        String toInsert =
-                                "# ---- BEGIN AUTO-GENERATED CODE ----\n" +
-                                        "# ---- " + hash + " ----\n" +
-                                        "# to remove these comments and send feedback press alt-G\n" +
-                                        selectedValue.value + "\n" +
-                                        "# ---- END AUTO-GENERATED CODE ----\n";
-                        String finalToInsert = insertIndent(toInsert, indent);
-                        final Runnable runnable = () -> document.replaceString(start, end, finalToInsert);
-                        WriteCommandAction.runWriteCommandAction(project, runnable);
                     }
                     return super.onChosen(selectedValue, finalChoice);
                 }
@@ -122,7 +146,9 @@ public class QueryIntent extends AnAction {
             jbPopupFactory.createListPopup(qList).show(jbPopupFactory.guessBestPopupLocation(editor));
             selectionModel.removeSelection();
         } catch(Exception e) {
-            System.err.println("Caught exception " + e);
+            String exMsg = "Caught exception: " + e;
+            System.err.println(exMsg);
+            HintManager.getInstance().showErrorHint(editor, exMsg);
         }
     }
 
@@ -138,10 +164,6 @@ public class QueryIntent extends AnAction {
         for (int i = 0; i < htmlTextList.size(); i++) {
             options.get(i).htmlValue = htmlTextList.get(i);
         }
-    }
-
-    public static String insertIndent(String str, String indent) {
-        return str.replaceAll("(\r\n|\n)", "\n" + indent);
     }
 
     @Override

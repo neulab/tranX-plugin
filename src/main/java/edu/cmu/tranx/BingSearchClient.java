@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,11 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BingSearchClient {
+public class BingSearchClient extends Client {
 
-    final static HttpClient client = HttpClient.newHttpClient();
-
-    public static List<String> getQuestionIDs(String buf) throws Exception {
+    public static List<String> getQuestionIDs(String buf) throws IOException, InterruptedException {
         URI uri = UrlBuilder.empty()
                 .withScheme("http")
                 .withHost("www.bing.com")
