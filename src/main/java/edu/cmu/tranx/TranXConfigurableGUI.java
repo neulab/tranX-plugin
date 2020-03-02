@@ -15,6 +15,7 @@ public class TranXConfigurableGUI {
     public JPanel getRootPanel() {
         return rootPanel;
     }
+
     public void createUI() {
         config = TranXConfig.getInstance();
         textField1.setText(config.getUserName());

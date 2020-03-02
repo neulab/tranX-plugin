@@ -23,6 +23,7 @@ public class EditorStatusComponent extends AbstractProjectComponent {
     protected EditorStatusComponent(Project project) {
         super(project);
     }
+
     @Override
     public void projectOpened() {
         MessageBusConnection connection = myProject.getMessageBus().connect(myProject);

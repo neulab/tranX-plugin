@@ -11,7 +11,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 
-public class TranXHttpClient extends Client{
+public class TranXHttpClient extends Client {
 
     public static Response sendData(String buf) throws IOException, InterruptedException {
         URI uri = UrlBuilder.empty()

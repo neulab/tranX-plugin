@@ -10,7 +10,7 @@ public class TranXHttpClientTest {
     public void sendData() throws Exception {
         ArrayList<Hypothesis> response = TranXHttpClient.sendData("print hello").hypotheses;
         System.out.println("I'm currently running this test");
-        for(Hypothesis x : response) {
+        for (Hypothesis x : response) {
             System.out.println(x.id + " " + x.value + " " + x.score);
         }
     }
