@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'edu.cmu.tranx'
-version '1.1-SNAPSHOT'
+version '1.2-SNAPSHOT'
 
 sourceCompatibility = 1.11
 
@@ -18,6 +18,8 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
     compile 'org.jsoup:jsoup:1.12.1'
+    runtime group: 'org.pygments', name: 'pygments', version: '2.5.2'
+    compile group: 'org.python', name: 'jython-standalone', version: '2.7.1'
     testImplementation 'junit:junit:4.12'
 }
 

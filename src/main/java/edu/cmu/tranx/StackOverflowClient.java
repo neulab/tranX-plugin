@@ -9,7 +9,6 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -17,9 +16,8 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 
-public class StackOverflowClient {
+public class StackOverflowClient extends Client {
 
-    final static HttpClient client = HttpClient.newHttpClient();
     public static InputStream getDecodedInputStream(
             HttpResponse<InputStream> httpResponse) {
         String encoding = determineContentEncoding(httpResponse);
@@ -54,51 +52,26 @@ public class StackOverflowClient {
         return sb.toString();
     }
 
-    public static String integerJoin(List<Integer> arr, String separator) {
-        if (null == arr || 0 == arr.size()) return "";
-        StringBuilder sb = new StringBuilder(256);
-        sb.append(arr.get(0).toString());
-        for (int i = 1; i < arr.size(); i++) sb.append(separator).append(arr.get(i).toString());
-        return sb.toString();
-    }
 
+    public static Response sendData(String buf) throws IOException, InterruptedException {
+        List<String> questionIds = BingSearchClient.getQuestionIDs(buf);
+        String joinedQids = String.join(";", questionIds);
 
-    public static Response sendData(String buf) throws Exception {
         URI uri = UrlBuilder.empty()
                 .withScheme("https")
                 .withHost("api.stackexchange.com")
-                .withPath("/2.2/search")
+                .withPath("/2.2/questions/" +  joinedQids + "/answers")
                 .addParameter("order", "desc")
-                .addParameter("sort", "relevance")
-                .addParameter("intitle", buf)
-                .addParameter("tagged", "python")
+                .addParameter("sort", "votes")
+                .addParameter("pagesize", "10")
+                .addParameter("filter", "withbody")
                 .addParameter("site", "stackoverflow")
                 .toUri();
+
         System.out.println(uri);
         HttpRequest request = HttpRequest.newBuilder(uri).build();
         InputStream response = getDecodedInputStream(client.send(request, HttpResponse.BodyHandlers.ofInputStream()));
         String jsonString = inputStreamToString(response);
-        // get search result qids
-        List<Integer> qids = JsonPath.read(jsonString, "$.items[*].question_id");
-        // get selected answers
-        List<Integer> selectedAids = JsonPath.read(jsonString, "$.items[*].accepted_answer_id");
-        String joinedAids = integerJoin(selectedAids, ";");
-        System.out.println(joinedAids);
-
-        uri = UrlBuilder.empty()
-                .withScheme("https")
-                .withHost("api.stackexchange.com")
-                .withPath("/2.2/answers/" + joinedAids)
-                .addParameter("sort", "votes")
-                .addParameter("order", "desc")
-                .addParameter("site", "stackoverflow")
-                .addParameter("filter", "withbody")
-                .toUri();
-        System.out.println(uri);
-
-        request = HttpRequest.newBuilder(uri).build();
-        response = getDecodedInputStream(client.send(request, HttpResponse.BodyHandlers.ofInputStream()));
-        jsonString = inputStreamToString(response);
 
         List<String> answerBodies = JsonPath.read(jsonString, "$.items[*].body");
 
@@ -115,6 +88,14 @@ public class StackOverflowClient {
             }
         }
         return res;
+    }
+
+    public static List<Hypothesis> getCandidates(String query) {
+        try {
+            return sendData(query).hypotheses;
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
     }
 
 }

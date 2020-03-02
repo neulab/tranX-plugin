@@ -4,17 +4,16 @@ package edu.cmu.tranx;
 import com.google.gson.Gson;
 import io.mikael.urlbuilder.UrlBuilder;
 
+import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 
-public class TranXHttpClient {
+public class TranXHttpClient extends Client{
 
-    final static HttpClient client = HttpClient.newHttpClient();
-
-    public static Response sendData(String buf) throws Exception {
+    public static Response sendData(String buf) throws IOException, InterruptedException {
         URI uri = UrlBuilder.empty()
                 .withScheme("http")
                 .withHost("moto.clab.cs.cmu.edu")
@@ -27,6 +26,14 @@ public class TranXHttpClient {
         Gson gson = new Gson();
         String jsonString = response.body();
         return gson.fromJson(jsonString, Response.class);
+    }
+
+    public static List<Hypothesis> getCandidates(String query) {
+        try {
+            return sendData(query).hypotheses;
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
     }
 
 }

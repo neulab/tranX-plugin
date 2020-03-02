@@ -19,6 +19,7 @@
         <applicationConfigurable groupId="tools" displayName="TranX Plugin"
                                  id="preference.TranXConfigurable" instance="edu.cmu.tranx.TranXConfigurable" />
         <applicationService serviceImplementation="edu.cmu.tranx.TranXConfig"/>
+        <applicationService serviceImplementation="edu.cmu.tranx.CodeSyntaxHighlighter"/>
 
     </extensions>
 
@@ -27,10 +28,10 @@
         <group id="menu.TranXPopup" text="_TranX Assistant" description="TranX developer assistant">
             <add-to-group group-id="EditorPopupMenu" anchor="first" />
 
-            <action id="makeTextBoxes" class="edu.cmu.tranx.AccessText" text="Ask a Question">
+            <action id="queryIntent" class="edu.cmu.tranx.QueryIntent" text="Ask a Question">
                 <keyboard-shortcut first-keystroke="control alt G" keymap="$default"/>
             </action>
-            <action id="getEdits" class="edu.cmu.tranx.GetEdit" text="Upload Edits" >
+            <action id="getEdit" class="edu.cmu.tranx.GetEdit" text="Upload Edits" >
                 <keyboard-shortcut first-keystroke="alt G" keymap="$default"/>
             </action>
             <!-- <action id="Code History" class="com.myPlugin.History" text="Code History"

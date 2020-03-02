@@ -6,15 +6,12 @@ import io.mikael.urlbuilder.UrlBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
 
-public class UploadHttpClient {
-
-    final static HttpClient client = HttpClient.newHttpClient();
+public class UploadHttpClient extends Client {
 
     public static boolean sendQueryData(String query, String userId, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
         QueryData queryData = new QueryData();
@@ -29,14 +26,14 @@ public class UploadHttpClient {
         return sendData(queryData);
     }
 
-    public static boolean sendEditData(String finalModifiedCode, String userId, String currentDocument, String hash) {
+    public static boolean sendEditData(String finalModifiedCode, String userId, String currentDocument, String query, String hash) {
         EditData editData = new EditData();
         editData.finalModifiedCode = finalModifiedCode;
         editData.userId = userId;
         editData.eventType = "edit";
         editData.document = currentDocument;
         editData.hash = hash;
-
+        editData.query = query;
 
         return sendData(editData);
     }
