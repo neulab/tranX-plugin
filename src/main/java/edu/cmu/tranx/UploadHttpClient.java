@@ -13,10 +13,11 @@ import java.util.List;
 
 public class UploadHttpClient extends Client {
 
-    public static boolean sendQueryData(String query, String userId, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
+    public static boolean sendQueryData(String query, String userId, String projectName, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
         QueryData queryData = new QueryData();
         queryData.candidates = options;
         queryData.userId = userId;
+        queryData.projectName = projectName;
         queryData.query = query;
         queryData.selectedIndex = selectedIndex;
         queryData.eventType = "query";
@@ -26,10 +27,11 @@ public class UploadHttpClient extends Client {
         return sendData(queryData);
     }
 
-    public static boolean sendEditData(String finalModifiedCode, String userId, String currentDocument, String query, String hash) {
+    public static boolean sendEditData(String finalModifiedCode, String userId, String projectName, String currentDocument, String query, String hash) {
         EditData editData = new EditData();
         editData.finalModifiedCode = finalModifiedCode;
         editData.userId = userId;
+        editData.projectName = projectName;
         editData.eventType = "edit";
         editData.document = currentDocument;
         editData.hash = hash;

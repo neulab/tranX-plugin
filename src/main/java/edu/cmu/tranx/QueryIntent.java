@@ -37,7 +37,6 @@ public class QueryIntent extends AnAction {
         //Get all the required data from data keys
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
-
         // ensure userId set in settings
         if (config == null || config.getUserName() == null || config.getUserName().equals("")) {
             HintManager.getInstance().showErrorHint(editor, "Error: UserID not set in plugin settings");
@@ -134,7 +133,7 @@ public class QueryIntent extends AnAction {
                     final Runnable runnable = () -> document.replaceString(start, end, finalToInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
 
-                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(),
+                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(), project.getName(),
                             selectedIndex, options, document.getText(), hash)) {
                         UndoManager.getInstance(project).undo(FileEditorManager.getInstance(project).getSelectedEditor());
                         HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
