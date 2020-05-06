@@ -68,7 +68,6 @@ public class StackOverflowClient extends Client {
                 .addParameter("site", "stackoverflow")
                 .toUri();
 
-        System.out.println(uri);
         HttpRequest request = HttpRequest.newBuilder(uri).build();
         InputStream response = getDecodedInputStream(client.send(request, HttpResponse.BodyHandlers.ofInputStream()));
         String jsonString = inputStreamToString(response);

@@ -61,7 +61,7 @@ public class GetEdit extends AnAction {
                 String finalModifiedCode = modifiedCode.trim();
                 final Runnable runnable = () -> document.replaceString(finalMatchedStart, finalMatchedEnd, finalModifiedCode);
                 WriteCommandAction.runWriteCommandAction(project, runnable);
-                if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), document.getText(), query, hash)) {
+                if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), project.getName(), document.getText(), query, hash)) {
                     UndoManager.getInstance(project).undo(FileEditorManager.getInstance(project).getSelectedEditor());
                     HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
                 }

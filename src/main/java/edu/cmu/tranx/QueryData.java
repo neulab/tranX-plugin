@@ -8,6 +8,7 @@ public class QueryData {
     List<Hypothesis> candidates;
     int selectedIndex;
     String userId;
+    String projectName;
     String eventType;
     String document;
 }
