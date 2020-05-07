@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'edu.cmu.tranx'
-version '1.2-SNAPSHOT'
+version '1.3-SNAPSHOT'
 
 sourceCompatibility = 1.11
 
@@ -26,7 +26,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // define runIde test version here
-    version '2019.3.3'
+    version '2020.1'
     type 'PY'
     updateSinceUntilBuild false
 }
