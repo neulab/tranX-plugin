@@ -9,6 +9,7 @@ public class QueryData {
     int selectedIndex;
     String userId;
     String projectName;
+    String fileName;
     String eventType;
     String document;
 }

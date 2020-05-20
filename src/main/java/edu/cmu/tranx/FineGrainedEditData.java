@@ -1,12 +1,10 @@
 package edu.cmu.tranx;
 
-public class EditData {
-    String hash;
-    String query;
-    String finalModifiedCode;
+public class FineGrainedEditData {
     String userId;
-    String fileName;
+    long clientTimestamp;
     String projectName;
+    String fileName;
     String eventType;
     String document;
 }

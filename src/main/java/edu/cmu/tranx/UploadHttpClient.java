@@ -8,16 +8,18 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
 import java.util.List;
 
 
 public class UploadHttpClient extends Client {
 
-    public static boolean sendQueryData(String query, String userId, String projectName, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
+    public static boolean sendQueryData(String query, String userId, String projectName, String fileName, int selectedIndex, List<Hypothesis> options, String currentDocument, String hash) {
         QueryData queryData = new QueryData();
         queryData.candidates = options;
         queryData.userId = userId;
         queryData.projectName = projectName;
+        queryData.fileName = fileName;
         queryData.query = query;
         queryData.selectedIndex = selectedIndex;
         queryData.eventType = "query";
@@ -27,11 +29,12 @@ public class UploadHttpClient extends Client {
         return sendData(queryData);
     }
 
-    public static boolean sendEditData(String finalModifiedCode, String userId, String projectName, String currentDocument, String query, String hash) {
+    public static boolean sendEditData(String finalModifiedCode, String userId, String projectName, String fileName, String currentDocument, String query, String hash) {
         EditData editData = new EditData();
         editData.finalModifiedCode = finalModifiedCode;
         editData.userId = userId;
         editData.projectName = projectName;
+        editData.fileName = fileName;
         editData.eventType = "edit";
         editData.document = currentDocument;
         editData.hash = hash;
@@ -39,6 +42,18 @@ public class UploadHttpClient extends Client {
 
         return sendData(editData);
     }
+
+    public static boolean sendFineGrainedEditData(String userId, String projectName, String fileName, String currentDocument) {
+        FineGrainedEditData fineGrainedEditData = new FineGrainedEditData();
+        fineGrainedEditData.userId = userId;
+        fineGrainedEditData.projectName = projectName;
+        fineGrainedEditData.fileName = fileName;
+        fineGrainedEditData.eventType = "fine_grained_edit";
+        fineGrainedEditData.document = currentDocument;
+        fineGrainedEditData.clientTimestamp = Instant.now().getEpochSecond();
+        return sendData(fineGrainedEditData);
+    }
+
 
     private static boolean sendData(Object data) {
         Gson gson = new Gson();

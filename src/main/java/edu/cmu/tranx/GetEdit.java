@@ -9,8 +9,10 @@ import com.intellij.openapi.command.undo.UndoManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +34,8 @@ public class GetEdit extends AnAction {
         final Editor editor = anActionEvent.getRequiredData(CommonDataKeys.EDITOR);
         final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
         final Document document = editor.getDocument();
+        final VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+
         final SelectionModel selectionModel = editor.getSelectionModel();
 
         // ensure userId set in settings
@@ -55,13 +59,13 @@ public class GetEdit extends AnAction {
             matchedStart = matcher.start();
             matchedEnd = matcher.end();
             if (start >= matchedStart && start <= matchedEnd) {
-                System.out.println(query);
                 int finalMatchedStart = matchedStart;
                 int finalMatchedEnd = matchedEnd;
                 String finalModifiedCode = modifiedCode.trim();
                 final Runnable runnable = () -> document.replaceString(finalMatchedStart, finalMatchedEnd, finalModifiedCode);
                 WriteCommandAction.runWriteCommandAction(project, runnable);
-                if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), project.getName(), document.getText(), query, hash)) {
+                if (!UploadHttpClient.sendEditData(finalModifiedCode, config.getUserName(), project.getName(),
+                        file.getName(), document.getText(), query, hash)) {
                     UndoManager.getInstance(project).undo(FileEditorManager.getInstance(project).getSelectedEditor());
                     HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
                 }

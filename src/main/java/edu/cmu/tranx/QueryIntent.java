@@ -10,11 +10,13 @@ import com.intellij.openapi.command.undo.UndoManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.*;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.DocumentUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +63,7 @@ public class QueryIntent extends AnAction {
     private void displayResults(String query, Editor editor, Project project) {
         if (Utils.isBlankString(query)) return;
         final Document document = editor.getDocument();
+        final VirtualFile file = FileDocumentManager.getInstance().getFile(document);
         final SelectionModel selectionModel = editor.getSelectionModel();
 
         int start = selectionModel.getSelectionStart();
@@ -133,7 +136,7 @@ public class QueryIntent extends AnAction {
                     final Runnable runnable = () -> document.replaceString(start, end, finalToInsert);
                     WriteCommandAction.runWriteCommandAction(project, runnable);
 
-                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(), project.getName(),
+                    if (!UploadHttpClient.sendQueryData(query, config.getUserName(), project.getName(), file.getName(),
                             selectedIndex, options, document.getText(), hash)) {
                         UndoManager.getInstance(project).undo(FileEditorManager.getInstance(project).getSelectedEditor());
                         HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");

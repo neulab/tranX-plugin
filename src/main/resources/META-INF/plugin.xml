@@ -2,7 +2,7 @@
     <id>edu.cmu.tranx.tranx_plugin</id>
     <name>TranX Developer Assistant</name>
     <vendor email="gneubig@cs.cmu.edu" url="http://www.phontron.com">Graham Neubig</vendor>
-    <idea-version since-build="191.*"/>
+    <idea-version since-build="193.*"/>
 
     <description><![CDATA[
     A developer assistant that allows you to ask questions in English and get responses in source code.<br>
@@ -34,17 +34,12 @@
             <action id="getEdit" class="edu.cmu.tranx.GetEdit" text="Upload Edits">
                 <keyboard-shortcut first-keystroke="alt G" keymap="$default"/>
             </action>
-            <!-- <action id="Code History" class="com.myPlugin.History" text="Code History"
-                     description="Extracts lines of code before the caret"/> -->
         </group>
 
     </actions>
-
-    <!--    <project-components>-->
-    <!--        <component>-->
-    <!--            <implementation-class>edu.cmu.tranx.EditorStatusComponent</implementation-class>-->
-    <!--        </component>-->
-    <!--    </project-components>-->
+    <projectListeners>
+        <listener class="edu.cmu.tranx.EditActivities" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
 
 
 </idea-plugin>
