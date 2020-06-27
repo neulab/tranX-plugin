@@ -16,7 +16,7 @@ A plugin for code generation in PyCharm/IntelliJ using tranX
 ## Usage
 
 ### Quick Start
-- (IMPORTANT BEFORE FIRST USE) In the PyCharm IDE, go to File - Settings, find "TranX plugin" under "Tools" category. Make sure to enter a unique user name for identification and data collection purposes.
+- (Before first use) In the PyCharm IDE, go to File - Settings, find "TranX plugin" under "Tools" category. Make sure to enter a unique user name for identification and data collection purposes.
 - Create a new Python project and in the editor, press Alt-Ctrl-G or click "Ask question" in the right click context menu.
 - After editing the code snippet, make sure the cursor is currently within to range of the auto-generated code block. Press Alt-G to upload edits.
 
@@ -27,6 +27,13 @@ A plugin for code generation in PyCharm/IntelliJ using tranX
 - You can select the desired output by pressing `Enter` on the candidate. Or, you could click the blank area of the editor or press `Esc` to give up.
 
 ![](imgs/query.gif)
+
+### How to write your queries that best suit the code generation model?
+- Quote variable names in the query with grave accent mark: ``... `variable_name` ...``.
+- Quote string literals with regular quotation marks: ``... "Hello World!" ...``
+- Example query 1: open a file "yourfile.txt" in write mode.
+- Example query 2: lower a string `` `text` `` and remove non-alphanumeric characters aside from space.
+
 
 ### How to edit generated code snippets to fit your programming need?
 - It is often the case that the generated or retrieved code snippets need more editing to fit the program.
