@@ -8,7 +8,7 @@ public class BingSearchClientTest {
 
     @Test
     public void sendData() throws Exception {
-        List<String> res = BingSearchClient.getQuestionIDs("reverse list");
+        List<String> res = BingSearchClient.getQuestionIDs("remote");
         System.out.println(res);
         System.out.println("I'm currently running this test");
     }

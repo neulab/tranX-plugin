@@ -33,6 +33,13 @@ public class EditActivities implements FileEditorManagerListener {
         if (fileEditor == null || document == null) {
             return;
         }
+
+        // upload fine-grained edits only on .py files
+        String ext = file.getExtension();
+        if (ext == null || !ext.equals("py")) {
+            return;
+        }
+
         DeferredDocumentListener listener = new DeferredDocumentListener(1500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

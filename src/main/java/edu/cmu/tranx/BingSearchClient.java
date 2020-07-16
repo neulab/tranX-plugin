@@ -33,7 +33,10 @@ public class BingSearchClient extends Client {
         Elements links = bingSearchDoc.select("li.b_algo > h2 > a");
         List<String> qIds = new ArrayList<>();
         for (Element e : links) {
-            qIds.add(e.attr("href").split("/")[4]);
+            String targetLink = e.attr("href");
+            if (targetLink.contains("stackoverflow.com/questions/")) {
+                qIds.add(targetLink.split("/")[4]);
+            }
         }
         return qIds;
     }
