@@ -25,6 +25,7 @@ public class UploadHttpClient extends Client {
         queryData.eventType = "query";
         queryData.document = currentDocument;
         queryData.hash = hash;
+        queryData.clientTimestamp = Instant.now().getEpochSecond();
 
         return sendData(queryData);
     }
@@ -39,7 +40,7 @@ public class UploadHttpClient extends Client {
         editData.document = currentDocument;
         editData.hash = hash;
         editData.query = query;
-
+        editData.clientTimestamp = Instant.now().getEpochSecond();
         return sendData(editData);
     }
 

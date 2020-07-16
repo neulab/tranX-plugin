@@ -12,4 +12,5 @@ public class QueryData {
     String fileName;
     String eventType;
     String document;
+    long clientTimestamp;
 }

@@ -9,4 +9,5 @@ public class EditData {
     String projectName;
     String eventType;
     String document;
+    long clientTimestamp;
 }
