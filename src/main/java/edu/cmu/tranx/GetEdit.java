@@ -82,7 +82,10 @@ public class GetEdit extends AnAction {
         final Project project = e.getData(CommonDataKeys.PROJECT);
         final Editor editor = e.getData(CommonDataKeys.EDITOR);
         //Set visibility only in case of existing project and editor and if some text in the editor is selected
-        e.getPresentation().setVisible((project != null && editor != null));
+        e.getPresentation().setEnabledAndVisible((project != null && editor != null));
+        if (config != null) {
+            e.getPresentation().setEnabledAndVisible(config.isEnableQuery());
+        }
     }
 }
 

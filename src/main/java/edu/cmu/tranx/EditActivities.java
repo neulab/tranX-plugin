@@ -58,6 +58,10 @@ public class EditActivities implements FileEditorManagerListener {
             System.err.println("Error: UserID not set in plugin settings");
             return;
         }
+        // check if disabled fine-grained edit upload
+        if (!config.isEnableFineGrainedEdit()) {
+            return;
+        }
 
         if (file == null) {
             System.err.println("Error: file null");
