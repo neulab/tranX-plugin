@@ -9,16 +9,15 @@ A plugin for code generation in PyCharm/IntelliJ using tranX
 - To build and package the plugin into a jar, use "Tasks - intellij - buildPlugin" instead.
 
 ## Installation
-- Download the latest release tranx_plugin-[VERSION]-SNAPSHOT.zip
+- Download the latest release tranx_plugin-SNAPSHOT.zip
  from https://github.com/neulab/tranX-plugin/releases
 - Follow the instruction on https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk to install plugin zip file to PyCharm IDE (version 2019.1 or higher)
 
 ## Usage
 
 ### Quick Start
-- (Before first use) In the PyCharm IDE, go to File - Settings, find "TranX plugin" under "Tools" category. Make sure to enter a unique user name for identification and data collection purposes.
-- Create a new Python project and in the editor, press Alt-Ctrl-G or click "Ask question" in the right click context menu.
-- After editing the code snippet, make sure the cursor is currently within to range of the auto-generated code block. Press Alt-G to upload edits.
+- Create a new Python project and in the editor, press Alt-Ctrl-G (Control+Options+G for Mac) or click "Ask question" in the right click context menu.
+- After editing the code snippet, make sure the cursor is currently within to range of the auto-generated code block. Press Alt-G (Options+G for Mac) to upload edits.
 
 ### How to perform a query to generate and retrieve code snippets?
 - In the code editor area, either click through the context menu `Ask question`, or use shortcut `Control+Options+G` for Mac users and `Ctrl+Alt+G` for Windows/Linux users.
