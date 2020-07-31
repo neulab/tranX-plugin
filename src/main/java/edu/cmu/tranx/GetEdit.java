@@ -72,7 +72,7 @@ public class GetEdit extends AnAction {
                 return;
             }
         }
-        HintManager.getInstance().showErrorHint(editor, "Error: Cursor position not inside generated block. (Nested block? Upload inner first!)");
+        HintManager.getInstance().showErrorHint(editor, "Error: Cursor position not inside generated block. (Nested block? Upload inner block first!)");
     }
 
 
