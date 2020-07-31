@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class GetEdit extends AnAction {
     private static final String GEN_PATTERN =
-            "(?s)# ---- BEGIN AUTO-GENERATED CODE ----\n\\s*# ---- ([a-z0-9]+) ----\n\\s*# query: (.*?)\n\\s*# to remove these comments and send feedback press alt-G\\s(.*?)\n\\s*# ---- END AUTO-GENERATED CODE ----";
+            "(?s)# ---- BEGIN AUTO-GENERATED CODE ----\n\\s*# ---- ([a-z0-9]+) ----\n\\s*# query: ([^#]*?)\n\\s*# to remove these comments and send feedback press alt-G\\s((?!.*# ---- B).*?)\n\\s*# ---- END AUTO-GENERATED CODE ----";
 
     private Pattern genPattern = Pattern.compile(GEN_PATTERN);
     private final TranXConfig config = TranXConfig.getInstance();
@@ -72,7 +72,7 @@ public class GetEdit extends AnAction {
                 return;
             }
         }
-        HintManager.getInstance().showErrorHint(editor, "Error: Cursor position not inside generated block.");
+        HintManager.getInstance().showErrorHint(editor, "Error: Cursor position not inside generated block. (Nested block? Upload inner first!)");
     }
 
 
