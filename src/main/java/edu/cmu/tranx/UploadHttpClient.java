@@ -30,6 +30,21 @@ public class UploadHttpClient extends Client {
         return sendData(queryData);
     }
 
+    public static boolean sendUnselectedQueryData(String query, String userId, String projectName, String fileName, List<Hypothesis> options, String currentDocument) {
+        UnselectedQueryData unselectedQueryData = new UnselectedQueryData();
+        unselectedQueryData.candidates = options;
+        unselectedQueryData.userId = userId;
+        unselectedQueryData.projectName = projectName;
+        unselectedQueryData.fileName = fileName;
+        unselectedQueryData.query = query;
+        unselectedQueryData.eventType = "unselected_query";
+        unselectedQueryData.document = currentDocument;
+        unselectedQueryData.clientTimestamp = Instant.now().getEpochSecond();
+
+        return sendData(unselectedQueryData);
+    }
+
+
     public static boolean sendEditData(String finalModifiedCode, String userId, String projectName, String fileName, String currentDocument, String query, String hash) {
         EditData editData = new EditData();
         editData.finalModifiedCode = finalModifiedCode;

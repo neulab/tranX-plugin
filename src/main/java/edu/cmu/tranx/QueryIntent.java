@@ -144,6 +144,15 @@ public class QueryIntent extends AnAction {
                     return super.onChosen(selectedValue, finalChoice);
                 }
 
+                @Override
+                public void canceled() {
+                    // entered a query but no satisfying candidates :(
+                    if (!UploadHttpClient.sendUnselectedQueryData(query, config.getUserName(), project.getName(), file.getName(),
+                            options, document.getText())) {
+                        HintManager.getInstance().showErrorHint(editor, "Error: Upload failed.");
+                    }
+                }
+
             };
 
             JBPopupFactory jbPopupFactory = JBPopupFactory.getInstance();
