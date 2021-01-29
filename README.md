@@ -1,6 +1,12 @@
 # tranX-plugin
 A plugin for code generation in PyCharm/IntelliJ using tranX
 
+## Data Collection (READ FIRST!)
+This plugin collects and uploads your query to the plugin, code edits, and the snapshot of the source code in your current IDE editor to our server for research purposes.
+We will not share any of your Personal Identity Information to anyone.
+In the near future we will add the functionality to opt-out of these data collection.
+For now, if you are uncomfortable with the data collection, please DO NOT use it.
+
 ## Development
 - Clone this repository
 - Open IntelliJ IDEA IDE software, File - Open, select the repo directory.
