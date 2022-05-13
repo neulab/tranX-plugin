@@ -22,6 +22,7 @@ For now, if you are uncomfortable with the data collection, please DO NOT use it
 ## Usage
 
 ### Quick Start
+- IMPORTANT - set your user ID in the setting (can be anything) before using, by accessing "Settings- Tools - TranX plugin" in the IDE.
 - Create a new Python project and in the editor, press Alt-Ctrl-G (Control+Options+G for Mac) or click "Ask question" in the right click context menu.
 - After editing the code snippet, make sure the cursor is currently within to range of the auto-generated code block. Press Alt-G (Options+G for Mac) to upload edits.
 
